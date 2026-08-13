@@ -1,0 +1,23 @@
+[project]
+name = "ai-cookbook"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sourav Kumar", email = "sourav4nerist@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "ipykernel>=7.3.0",
+    "numpy>=2.5.2",
+    "pandas>=3.0.5",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+]
+
+[project.scripts]
+ai-cookbook = "ai_cookbook:main"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"
