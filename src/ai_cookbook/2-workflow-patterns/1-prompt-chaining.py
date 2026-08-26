@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -77,7 +77,7 @@ def extract_event_info(user_input: str) -> EventExtraction:
     messages = [
         {
             "role": "system",
-            "content": f"{date_context} Analyze if the message is a calendar event.",
+            "content": f"{date_context} Analyze if the message is a calendar event and return only valid JSON matching EventExtraction schema.",
         },
         {"role": "user", "content": user_input},
     ]
@@ -98,24 +98,29 @@ def parse_event_details(description: str) -> EventDetails:
     logger.info("Starting event details parsing")
     today = datetime.now()
     date_context = f"Today is {today.strftime('%A, %B %d, %Y')}"
+    completion = None
+    result = None
 
     messages = [
         {
             "role": "system",
-            "content": f"{date_context}, Extract detailed event information from the description provided. Use provided current date as reference in case of relative date references",
+            "content": f"{date_context}, Extract detailed event information from the description provided and return only valid JSON matching EventDetails schema. Use provided current date as reference in case of relative date references.",
         },
-        {"roles": "user", "content": description},
+        {"role": "user", "content": description},
     ]
+    try:
+        completion = client.beta.chat.completions.parse(
+            model=model, messages=messages, response_format=EventDetails
+        )
+        result = completion.choices[0].message.parsed
+        logger.info(
+            f"Parsed event details- Name: {result.name}, date: {result.date}, duration: {result.duration_minutes} min"
+        )
+        logger.info(f"Participants: {','.join(result.participants)}")
+    except ValidationError as e:
+        logger.error(f"Invalid JSON from model: {e}")
+        logger.error("fallback: parse manually or retry with clearer instructions")
 
-    completion = client.beta.chat.completions.parse(
-        model=model, messages=messages, response_format=EventDetails
-    )
-
-    result = completion.choices[0].message.parsed
-    logger.info(
-        f"Parsed event details- Name: {result.name}, date: {result.date}, duration: {result.duration_minutes} min"
-    )
-    logger.info(f"Participants: {','.join(result.participants)}")
     return result
 
 
@@ -126,7 +131,7 @@ def generate_confirmation(event_details: EventDetails) -> EventConfirmation:
     messages = [
         {
             "role": "system",
-            "content": "Generate a natural language event conformation message. Sign of with the name: Sourav",
+            "content": "Generate a natural language event conformation message. Sign of with the name: Sourav  and return only valid JSON matching EventConfirmation schema.",
         },
         {"role": "user", "content": str(event_details.model_dump)},
     ]
@@ -194,13 +199,13 @@ else:
 # Step 5: Test the chain with an invalid input
 # --------------------------------------------------------------
 
-user_input = "Send an email to Dev and Divakar to discuss project roadmap."
+# user_input = "Send an email to Dev and Divakar to discuss project roadmap."
 
-result = process_calendar_request(user_input)
+# result = process_calendar_request(user_input)
 
-if result:
-    print(f"Confirmation: {result.confirmation_message}")
-    if result.calendar_link:
-        print(f"Calendar link: {result.calendar_link}")
-else:
-    print(f"This message is not a calendar event request.")
+# if result:
+#     print(f"Confirmation: {result.confirmation_message}")
+#     if result.calendar_link:
+#         print(f"Calendar link: {result.calendar_link}")
+# else:
+#     print(f"This message is not a calendar event request.")
