@@ -199,13 +199,13 @@ else:
 # Step 5: Test the chain with an invalid input
 # --------------------------------------------------------------
 
-# user_input = "Send an email to Dev and Divakar to discuss project roadmap."
+user_input = "Send an email to Dev and Divakar to discuss project roadmap."
 
-# result = process_calendar_request(user_input)
+result = process_calendar_request(user_input)
 
-# if result:
-#     print(f"Confirmation: {result.confirmation_message}")
-#     if result.calendar_link:
-#         print(f"Calendar link: {result.calendar_link}")
-# else:
-#     print(f"This message is not a calendar event request.")
+if result:
+    print(f"Confirmation: {result.confirmation_message}")
+    if result.calendar_link:
+        print(f"Calendar link: {result.calendar_link}")
+else:
+    print(f"This message is not a calendar event request.")

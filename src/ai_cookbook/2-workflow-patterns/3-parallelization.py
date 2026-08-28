@@ -119,14 +119,14 @@ async def validate_request(user_request: str) -> bool:
 # --------------------------------------------------------------
 
 
-# async def run_valid_example():
-#     # Test valid request
-#     request = "Let's schedule a meeting with Dev and Divakar next Tuesday at 12pm."
-#     print(f"Validating request: {request}")
-#     print(f"Is valid: {await validate_request(request)}")
+async def run_valid_example():
+    # Test valid request
+    request = "Let's schedule a meeting with Dev and Divakar next Tuesday at 12pm."
+    print(f"Validating request: {request}")
+    print(f"Is valid: {await validate_request(request)}")
 
 
-# asyncio.run(run_valid_example())
+asyncio.run(run_valid_example())
 
 # --------------------------------------------------------------
 # Step 5: Run suspicious example

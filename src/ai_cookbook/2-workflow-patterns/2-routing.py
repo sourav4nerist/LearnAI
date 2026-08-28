@@ -197,19 +197,19 @@ if result:
 # --------------------------------------------------------------
 # Step 4: Test with modify event
 # --------------------------------------------------------------
-# modify_event_input = (
-#     "Please reschedule the call with Dev and Divakar to next Wednesday at 3pm."
-# )
-# result = process_calendar_request(modify_event_input)
+modify_event_input = (
+    "Please reschedule the call with Dev and Divakar to next Wednesday at 3pm."
+)
+result = process_calendar_request(modify_event_input)
 
-# if result:
-#     print(f"Response: {result.message}")
+if result:
+    print(f"Response: {result.message}")
 
 # --------------------------------------------------------------
 # Step 5: Test with invalid request
 # --------------------------------------------------------------
-# invalid_input = "What's the time right now?"
-# result = process_calendar_request(invalid_input)
+invalid_input = "What's the time right now?"
+result = process_calendar_request(invalid_input)
 
-# if result:
-#     print(f"Response: {result.message}")
+if result:
+    print(f"Response: {result.message}")
